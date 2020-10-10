@@ -1,69 +1,37 @@
-import React from 'react'
-// import * as BooksAPI from './BooksAPI'
-import './App.css'
-import Shelf from './Shelf'
-import QueryResult from './QueryResult'
-import Book from './Book'
-import QueryPage from './QueryPage'
-import MyReads from './MyReads'
-import { getAll, update, search } from './BooksAPI'
+    import React from 'react'
+    import './App.css'
+    import QueryPage from './QueryPage'
+    import MyReads from './MyReads'
 
-class BooksApp extends React.Component {
+    class BooksApp extends React.Component {
 
-  state = {
-    allMyBooks: [],
-    showSearchPage: false
-  }
+    state = {
+        showSearchPage: false
+    }
 
-  componentDidMount() {
-    getAll()
-        .then( allMyBooks => {
-          this.setState({ allMyBooks })
-          console.log("In componentDidMount books on shelf: ", this.state.allMyBooks)
-        })
-  }
+    goToMainPage = ()=> {
+        console.log('goToMainPage')
+        this.setState({ showSearchPage: false })
+    }
 
-  handleBookShelfChange =  (book, shelf) => {
-      shelf = (shelf) ? shelf : ''
-      update({id: book.id}, shelf).then(
-          getAll().then((allMyBooks) => {
-              this.setState({ allMyBooks })
-              console.log("In app.js: ", this.state.allMyBooks)
-        }))
-  }
+    goToSearchPage = ()=> {
+        console.log('goToSearchPage')
+        this.setState({ showSearchPage: true })
+    }
 
+    render() {
+        const goToSearchPage = this.goToSearchPage
+        const goToMainPage = this.goToMainPage
+        return (
+            <div className="app">
+                {
+                    (this.state.showSearchPage)
+                    ? (<QueryPage goToMainPage = { goToMainPage } />)
+                    : (<MyReads goToSearchPage = { goToSearchPage } />)
+                }
+            </div>
+        )
+      }
+    }
 
-  goToMainPage = ()=> {
-      console.log('goToMainPage')
-      this.setState({ showSearchPage: false })}
-
-  goToSearchPage = ()=> {
-      console.log('goToSearchPage')
-      this.setState({ showSearchPage: true })}
-
-  render() {
-      const allMyBooks = this.state.allMyBooks
-      const goToSearchPage = this.goToSearchPage
-      const goToMainPage = this.goToMainPage
-      const handleBookShelfChange = this.handleBookShelfChange
-
-    return (
-        <div className="app">
-          {this.state.showSearchPage ? (
-            <QueryPage
-                handleBookShelfChange = { handleBookShelfChange }
-                goToMainPage = { goToMainPage }
-            />
-          ) : (
-            <MyReads
-                allMyBooks = { allMyBooks }
-                handleBookShelfChange = { handleBookShelfChange }
-                goToSearchPage = { goToSearchPage }
-            />
-          )}
-        </div>
-    )
-  }
-}
-
-export default BooksApp
+    export default BooksApp

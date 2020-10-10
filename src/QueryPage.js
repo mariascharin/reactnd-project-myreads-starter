@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './App.css'
 import Book from './Book'
-import {getAll, search, update} from "./BooksAPI";
+import { getAll, search, update } from "./BooksAPI";
 
 class QueryPage extends Component {
 
@@ -13,33 +13,40 @@ class QueryPage extends Component {
     componentDidMount() {
         getAll()
             .then( allMyBooks => {
-                this.setState({ allMyBooks })
-                console.log("In query page componentDidMount: ", this.state.allMyBooks)
+                this.setState({ allMyBooks: allMyBooks })
             })
     }
 
     handleBookSearch = (query, allMyBooks) => {
-        console.log('in query page, all my books: ', allMyBooks)
         // Find all the matching books except for the ones I already have on my shelf
-        console.log('in query page, query: ', query)
         search(query).then( (unfilteredBookSearchResult) => {
             if (unfilteredBookSearchResult && unfilteredBookSearchResult.length) {
                 // Filter out all the books that are already on my shelf
                 var filteredBookSearchResult = unfilteredBookSearchResult.filter(
                     (book) => !(allMyBooks.filter(myBook => myBook.id === book.id).length > 0))
-                console.log('in query page, unfilteredBookSearchResult: ', unfilteredBookSearchResult)
-                console.log('in query page, filteredBookSearchResult: ', filteredBookSearchResult)
-                this.setState({bookSearchResult: filteredBookSearchResult})
+                this.setState({ bookSearchResult: filteredBookSearchResult })
             } else {
-                this.setState({bookSearchResult: []})
+                this.setState({ bookSearchResult: [] })
             }
-            this.setState({query: query.trim()})
+            this.setState({ query: query.trim() })
         })
     }
 
+    handleBookShelfChange =  (book, shelf) => {
+        update({ id: book.id }, shelf).then(
+            getAll().then((allMyBooks) => {
+                this.setState({ allMyBooks })
+                // Redo search to filter out any books moved to my shelf
+                this.handleBookSearch(this.state.query, allMyBooks)
+
+            })
+        )
+    }
+
   render(){
-      const { goToMainPage, handleBookShelfChange } = this.props
+      const { goToMainPage } = this.props
       const handleBookSearch = this.handleBookSearch
+      const handleBookShelfChange = this.handleBookShelfChange
       const query = this.state.query
       const bookSearchResult = this.state.bookSearchResult
       const allMyBooks = this.state.allMyBooks
@@ -53,21 +60,21 @@ class QueryPage extends Component {
                       type="text"
                       placeholder="Search by title or author"
                       value = { query }
-                      onChange = {(event) => {handleBookSearch(event.target.value, allMyBooks)}}
+                      onChange = {(event) => {
+                          handleBookSearch(event.target.value, allMyBooks)
+                      }}
                   />
               </div>
           </div>
           <div className="search-books-results">
-              {query}
-
               {bookSearchResult.length > 0 && (
                   <div>
                       <h1>Search Results </h1>
                       <ol className="books-grid">
                           {bookSearchResult.map((book) => (
-                              <li key = {book.id}>
+                              <li key = { book.id }>
                                   <Book
-                                      book = {book}
+                                      book = { book }
                                       handleBookShelfChange = { handleBookShelfChange }
                                   />
                               </li>

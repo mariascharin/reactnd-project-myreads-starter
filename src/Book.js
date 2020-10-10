@@ -7,14 +7,15 @@ class Book extends Component {
 		const { book, handleBookShelfChange } = this.props
         const bookTitle = book.title
         const author = book.title
-        const imageUrl = book.imageLinks.smallThumbnail
-        const bookID = book.bookID
-
+        // Avoid crash if thumbnail is missing
+        const imageUrl = (book.imageLinks)
+            ? `url(${book.imageLinks.smallThumbnail})`
+            : ''
 		return (
 			<div className="book">
                 <div className="book-top">
                     <div className="book-cover"
-                         style={{ width: 128, height: 193, backgroundImage:`url(${imageUrl})` }}>
+                         style={{ width: 128, height: 193, backgroundImage:`${imageUrl}` }}>
                     </div>
                     <BookShelfChanger
                         book = { book }
