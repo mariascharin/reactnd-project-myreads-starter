@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import './App.css'
 import Book from './Book'
 import { getAll, search, update } from "./BooksAPI";
@@ -44,7 +45,6 @@ class QueryPage extends Component {
     }
 
   render(){
-      const { goToMainPage } = this.props
       const handleBookSearch = this.handleBookSearch
       const handleBookShelfChange = this.handleBookShelfChange
       const query = this.state.query
@@ -54,7 +54,11 @@ class QueryPage extends Component {
     return (
         <div className="search-books">
           <div className="search-books-bar">
-              <button className="close-search" onClick={ goToMainPage }>Close</button>
+              <Link
+                  to='/'
+                  className='close-search'
+              >Close</Link>
+
               <div className="search-books-input-wrapper">
                   <input
                       type="text"

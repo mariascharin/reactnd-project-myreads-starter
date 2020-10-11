@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import './App.css'
 import Shelf from "./Shelf";
 import { getAll, update } from "./BooksAPI";
@@ -26,7 +27,6 @@ class MyReads extends Component {
     }
 
     render(){
-        const { goToSearchPage } = this.props
         const allMyBooks = this.state.allMyBooks
         const handleBookShelfChange = this.handleBookShelfChange
         const shelves = [
@@ -63,9 +63,9 @@ class MyReads extends Component {
                     </div>
                 </div>
                 <div className="open-search">
-                    <button onClick={() => { goToSearchPage() }}>
-                        Find more books
-                    </button>
+                    <Link
+                        to='/search'
+                    >Find more books</Link>
                 </div>
             </div>
         )
