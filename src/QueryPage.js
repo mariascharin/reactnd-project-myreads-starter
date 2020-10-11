@@ -11,21 +11,26 @@ class QueryPage extends Component {
         bookSearchResult: [],
         allMyBooks: []
     }
+
     componentDidMount() {
         getAll()
-            .then( allMyBooks => {
+            .then( (allMyBooks) => {
                 this.setState({ allMyBooks: allMyBooks })
             })
     }
 
-    handleBookSearch = (query, allMyBooks) => {
-        // Find all the matching books except for the ones I already have on my shelf
-        search(query).then( (unfilteredBookSearchResult) => {
-            if (unfilteredBookSearchResult && unfilteredBookSearchResult.length) {
-                // Filter out all the books that are already on my shelf
-                var filteredBookSearchResult = unfilteredBookSearchResult.filter(
-                    (book) => !(allMyBooks.filter(myBook => myBook.id === book.id).length > 0))
-                this.setState({ bookSearchResult: filteredBookSearchResult })
+    handleBookSearch = (query) => {
+        search(query).then( (bookSearchResult) => {
+            if (bookSearchResult && bookSearchResult.length) {
+                let allMyBooks = this.state.allMyBooks
+                allMyBooks.forEach((book)=> {
+                    bookSearchResult.forEach((foundBook) => {
+                        if (book.id === foundBook.id) {
+                            foundBook.shelf = book.shelf
+                        }
+                    })
+                })
+                this.setState({ bookSearchResult: bookSearchResult })
             } else {
                 this.setState({ bookSearchResult: [] })
             }
@@ -33,15 +38,16 @@ class QueryPage extends Component {
         })
     }
 
-    handleBookShelfChange =  (book, shelf) => {
-        update({ id: book.id }, shelf).then(
-            getAll().then((allMyBooks) => {
-                this.setState({ allMyBooks })
-                // Redo search to filter out any books moved to my shelf
-                this.handleBookSearch(this.state.query, allMyBooks)
-
+    handleBookShelfChange =  (book, newShelf) => {
+        update({ id: book.id }, newShelf).then()
+        this.setState((currentState) => ({
+            bookSearchResult: currentState.bookSearchResult.map((c) => {
+                if (c.id === book.id) {
+                    c.shelf = newShelf
+                }
+                return c
             })
-        )
+        }))
     }
 
   render(){

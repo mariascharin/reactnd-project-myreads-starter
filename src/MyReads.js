@@ -16,14 +16,16 @@ class MyReads extends Component {
             })
     }
 
-    handleBookShelfChange =  (book, shelf) => {
-        update({ id: book.id }, shelf)
-            .then(
-                getAll()
-                    .then((allMyBooks) => {
-                        this.setState({ allMyBooks })
-                    })
-            )
+    handleBookShelfChange =  (book, newShelf) => {
+        update({ id: book.id }, newShelf).then()
+        this.setState((currentState) => ({
+            allMyBooks: currentState.allMyBooks.map((c) => {
+                if (c.id === book.id) {
+                    c.shelf = newShelf
+                }
+                return c
+            })
+        }))
     }
 
     render(){
