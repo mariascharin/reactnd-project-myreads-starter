@@ -18,8 +18,9 @@ class QueryPage extends Component {
                 this.setState({ allMyBooks: allMyBooks })
             })
     }
-
+    
     handleBookSearch = (query) => {
+        this.setState({ query: query })
         search(query).then( (bookSearchResult) => {
             if (bookSearchResult && bookSearchResult.length) {
                 let allMyBooks = this.state.allMyBooks
@@ -34,7 +35,6 @@ class QueryPage extends Component {
             } else {
                 this.setState({ bookSearchResult: [] })
             }
-            this.setState({ query: query.trim() })
         })
     }
 
