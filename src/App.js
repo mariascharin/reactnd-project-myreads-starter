@@ -9,9 +9,9 @@
     render() {
         return (
             <div className="app">
-                <Route exact path='/' render={() => (
+                <Route exact path='/'>
                     <MyReads />
-                )} />
+                </Route>
                 <Route path='/search' component={ QueryPage } />
             </div>
         )
