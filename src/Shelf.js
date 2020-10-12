@@ -2,10 +2,7 @@ import React, { Component } from 'react'
 import './App.css'
 import Book from './Book'
 
-class Shelf extends Component {
-
-render() {
-    const { shelfName, shelfCode, allMyBooks, handleBookShelfChange } = this.props
+const Shelf = ({ shelfName, shelfCode, allMyBooks, handleBookShelfChange }) => {
     const books = allMyBooks.filter( book => book.shelf === `${shelfCode}`)
     return (
       <div className="bookshelf">
@@ -25,6 +22,5 @@ render() {
       </div>
     )
   }
-}
 
 export default Shelf
