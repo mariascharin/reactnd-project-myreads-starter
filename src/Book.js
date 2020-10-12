@@ -6,7 +6,7 @@ class Book extends Component {
 	render(){
 		const { book, handleBookShelfChange } = this.props
         const bookTitle = book.title
-        const author = book.title
+        const author = book.authors
         // Avoid crash if thumbnail is missing
         const imageUrl = (book.imageLinks)
             ? `url(${book.imageLinks.smallThumbnail})`
