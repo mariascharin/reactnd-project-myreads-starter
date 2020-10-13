@@ -2,35 +2,11 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import './App.css'
 import Shelf from "./Shelf";
-import { getAll, update } from "./BooksAPI";
 
 class MyReads extends Component {
-    state = {
-        allMyBooks: []
-    }
-
-    componentDidMount() {
-        getAll()
-            .then( (allMyBooks) => {
-                this.setState({ allMyBooks: allMyBooks })
-            })
-    }
-
-    handleBookShelfChange =  (book, newShelf) => {
-        update({ id: book.id }, newShelf).then()
-        this.setState((currentState) => ({
-            allMyBooks: currentState.allMyBooks.map((c) => {
-                if (c.id === book.id) {
-                    c.shelf = newShelf
-                }
-                return c
-            })
-        }))
-    }
 
     render(){
-        const allMyBooks = this.state.allMyBooks
-        const handleBookShelfChange = this.handleBookShelfChange
+        const { allMyBooks, handleBookShelfChange } = this.props
         const shelves = [
             {
                 shelfName: 'Currently Reading',
@@ -56,7 +32,7 @@ class MyReads extends Component {
                             <li key = { shelf.shelfCode }>
                                 <Shelf
                                     shelfName = { shelf.shelfName }
-                                    shelfCode ={ shelf.shelfCode }
+                                    shelfCode = { shelf.shelfCode }
                                     allMyBooks = { allMyBooks }
                                     handleBookShelfChange = { handleBookShelfChange }
                                 />

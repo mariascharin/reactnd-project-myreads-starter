@@ -8,54 +8,43 @@ class QueryPage extends Component {
 
     state = {
         query: '',
-        bookSearchResult: [],
-        allMyBooks: []
-    }
-
-    componentDidMount() {
-        getAll()
-            .then( (allMyBooks) => {
-                this.setState({ allMyBooks: allMyBooks })
-            })
+        bookSearchResult: []
     }
     
-    handleBookSearch = (query) => {
-        this.setState({ query: query })
-        search(query).then( (bookSearchResult) => {
-            if (bookSearchResult && bookSearchResult.length) {
-                let allMyBooks = this.state.allMyBooks
-                allMyBooks.forEach((book)=> {
-                    bookSearchResult.forEach((foundBook) => {
-                        if (book.id === foundBook.id) {
-                            foundBook.shelf = book.shelf
-                        }
-                    })
-                })
-                this.setState({ bookSearchResult: bookSearchResult })
-            } else {
-                this.setState({ bookSearchResult: [] })
-            }
-        })
-    }
-
-    handleBookShelfChange =  (book, newShelf) => {
-        update({ id: book.id }, newShelf).then()
-        this.setState((currentState) => ({
-            bookSearchResult: currentState.bookSearchResult.map((c) => {
-                if (c.id === book.id) {
-                    c.shelf = newShelf
-                }
-                return c
-            })
-        }))
-    }
-
   render(){
-      const handleBookSearch = this.handleBookSearch
-      const handleBookShelfChange = this.handleBookShelfChange
+      const { allMyBooks, handleGlobalBookShelfChange } = this.props
       const query = this.state.query
       const bookSearchResult = this.state.bookSearchResult
-      const allMyBooks = this.state.allMyBooks
+
+      const handleBookSearch = (query) => {
+          this.setState({ query: query })
+          search(query).then( (bookSearchResult) => {
+              if (bookSearchResult && bookSearchResult.length) {
+                  allMyBooks.forEach((book)=> {
+                      bookSearchResult.forEach((foundBook) => {
+                          if (book.id === foundBook.id) {
+                              foundBook.shelf = book.shelf
+                          }
+                      })
+                  })
+                  this.setState({ bookSearchResult: bookSearchResult })
+              } else {
+                  this.setState({ bookSearchResult: [] })
+              }
+          })
+      }
+
+      const handleBookShelfChange =  (book, newShelf) => {
+          handleGlobalBookShelfChange(book, newShelf)
+          this.setState((currentState) => ({
+              bookSearchResult: currentState.bookSearchResult.map((c) => {
+                  if (c.id === book.id) {
+                      c.shelf = newShelf
+                  }
+                  return c
+              })
+          }))
+      }
 
     return (
         <div className="search-books">
